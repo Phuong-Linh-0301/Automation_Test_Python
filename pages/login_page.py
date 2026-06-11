@@ -18,8 +18,8 @@ class LoginPage:
         self.driver.find_element(*self.password_field).send_keys(password)
         self.driver.find_element(*self.click_btn).click()
 
-    #def is_upgrade_button_displayed(self):
+    def is_upgrade_button_displayed(self):
     #Đợi tối đa 10 giây cho đến khi nút upgrade xuất hiện trên màn hình và trả về True/False
-        #return WebDriverWait(self.driver, 10).until(
-    #lambda d: d.find_element(*self.upgrade_btn)
-    #).is_displayed()
+        return WebDriverWait(self.driver, 10).until(
+    lambda d: d.find_element(*self.upgrade_btn)
+    ).is_displayed()
