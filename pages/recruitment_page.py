@@ -5,10 +5,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from pages.page_base import BasePage
+from utils.config_reader import ConfigReader
 
 
-class RecuitmentPage:
+class RecuitmentPage(BasePage):
     def __init__(self, driver):
+        super().__init__(driver)
         # Khởi tạo driver để giúp tương tác với Chrome
         self.driver = driver
         
@@ -22,7 +26,9 @@ class RecuitmentPage:
         self.add_vacancy_btn = (By.XPATH,'//button[@class="oxd-button oxd-button--medium oxd-button--secondary"]')
         
         self.add_vacancy_header = (By.XPATH, '//h6[text()="Add Vacancy"]')
+        self.edit_vacancy_header = (By.XPATH, '//h6 [text()="Edit Vacancy"]')
         
+
         self.vacancy_name = (By.XPATH, '(//div[@data-v-957b4417]/input)[1]')
         self.job_title_dropdown = (By.XPATH, '//div[@class="oxd-select-text-input"]')
         self.description_field = (By.XPATH,'//textarea[@placeholder="Type description here"]')
@@ -34,12 +40,14 @@ class RecuitmentPage:
         self.role = (By.XPATH, '//span[text()="Automaton Tester"]')
 
 
-        self.active_switch = (By.XPATH, '//label[text()="Active"]/../following-sibling::div//span[@class="oxd-switch-input oxd-switch-input--active --label-right"]')
-        self.publish_switch = (By.XPATH, '//label[text()="Publish in RSS feed and web page"]/../following-sibling::div//span[@class="oxd-switch-input oxd-switch-input--active --label-right"]')
+        self.active_switch = (By.XPATH, '(//span[@class="oxd-switch-input oxd-switch-input--active --label-right"])[1]')
+        self.publish_switch = (By.XPATH, '(//span[@class="oxd-switch-input oxd-switch-input--active --label-right"])[2]')
 
         self.save_btn = (By.XPATH, '//button[@type="submit"]')
         self.cancel_btn = (By.XPATH, '//button[@type="button" and @class="oxd-button oxd-button--medium oxd-button--ghost"]')
 
+        self.vacancies_list = (By.XPATH, '//div[@class="oxd-table orangehrm-vacancy-list"]')
+        self.search_job_title_dropdown = (By.XPATH, '(//div[@class="oxd-select-text-input"])[1]')
 
     def navigate_to_vacancies_tab(self):
         self.driver.find_element(*self.vacancies_tab).click()
@@ -102,26 +110,50 @@ class RecuitmentPage:
 
 
     def configure_status_switches(self, active, publish):
+        """Configure the Active and Publish switches with explicit waits.
+
+        Uses element_to_be_clickable and raises a clear TimeoutException if
+        the expected toggle cannot be found within the timeout.
+        """
+        wait = WebDriverWait(self.driver, 10)
+
         if not active:
-            self.driver.find_element(*self.active_switch).click()
+            try:
+                el = wait.until(EC.element_to_be_clickable(self.active_switch))
+                if el.is_displayed() and el.is_enabled():
+                    el.click()
+            except TimeoutException:
+                raise TimeoutException(f"Active switch not found/clickable: {self.active_switch}")
+
         if publish:
-            self.driver.find_element(*self.publish_switch).click()
+            try:
+                el = wait.until(EC.element_to_be_clickable(self.publish_switch))
+                if el.is_displayed() and el.is_enabled():
+                    el.click()
+            except TimeoutException:
+                raise TimeoutException(f"Publish switch not found/clickable: {self.publish_switch}")
 
 
-    def fill_entire_vacancy_form(self, name, job_title, desc, manager_keyword, positions, active=False, publish=True):
+    def fill_entire_vacancy_form(self, name, job_title, desc, manager_keyword, positions):
         self.enter_vacancy_name(name)
         self.select_job_title(job_title)
         self.enter_description(desc)
         self.select_hiring_manager(manager_keyword)
         self.enter_position_number(positions)
-        self.configure_status_switches(active, publish)
+        #self.configure_status_switches(active, publish)
 
 
     def click_save(self):
         self.driver.find_element(*self.save_btn).click()
+
+    def is_edit_vacancy_header_displayed(self):
+        return WebDriverWait(self.driver, 10).until(lambda d: d.find_element(*self.edit_vacancy_header)).is_displayed()
   
     def click_cancel(self):
         self.driver.find_element(*self.cancel_btn).click()
+
+    def is_vacancies_list_displayed(self):
+        return WebDriverWait(self.driver, 10).until(lambda d: d.find_element(*self.vacancies_list)).is_displayed()
 
     #Hàm phục vụ cho Bước 10: Tìm kiếm lại bản ghi vừa tạo
     def search_created_vacancy(self, job_title, manager_keyword):
