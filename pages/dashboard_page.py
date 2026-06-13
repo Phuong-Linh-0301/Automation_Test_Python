@@ -8,9 +8,9 @@ class DashboardPage:
         # Khởi tạo driver để giúp tương tác với Chrome
         self.driver = driver
         # Danh sách các locator của các element trên trang login
-        self.recruitment_menu= (By.XPATH, '//span[@class="oxd-text oxd-text--span oxd-main-menu-item--name"]')
+        self.recruitment_menu= (By.XPATH, '//span[text()="Recruitment"]')
     
 
 
-    def navigate_to_recuitment_page(self,recruitment_menu):
+    def navigate_to_recruitment_page(self):
         self.driver.find_element(*self.recruitment_menu).click()
