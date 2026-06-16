@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime
+import uuid
 from selenium.webdriver.common.by import By
 # Import các trang từ folder Pages để phối hợp chạy kịch bản
 from pages.login_page import LoginPage
@@ -11,7 +12,8 @@ def test_create_new_automation_tester_vacancy_flow(driver):
     
     # Khởi tạo dữ liệu tên Vacancy động kèm ngày hôm nay (Bước 5)
     current_date = datetime.now().strftime("%d/%m/%Y")
-    expected_vacancy_name = f"Automation Tester For {current_date}"
+    random_suffix = uuid.uuid4().hex[:6]
+    expected_vacancy_name = f"Automation Tester For1 {current_date} {random_suffix}"
 
     # Đăng nhập hệ thống 
     login_page = LoginPage(driver)
@@ -64,7 +66,7 @@ def test_create_new_automation_tester_vacancy_flow(driver):
     
     # Tìm kiếm thông tin vừa tạo ----
     # Ô manager_keyword để rỗng để hệ thống tự lọc theo tài khoản vừa tạo
-    recruitment_page.search_created_vacancy(job_title="Automation Tester", manager_keyword="")
+    recruitment_page.search_created_vacancy(job_title="Automaton Tester", manager_keyword=manager_keyword_from_web)
     
     # Verify có ít nhất 1 dòng kết quả xuất hiện trong bảng ----
     assert recruitment_page.get_results_count() >= 1, "Lỗi: Không tìm thấy bản ghi nào sau khi Search!"
@@ -76,5 +78,4 @@ def test_create_new_automation_tester_vacancy_flow(driver):
     # Đăng xuất (Logout) ----
     recruitment_page.perform_logout()
     assert "login" in driver.current_url, "Lỗi: Đăng xuất không thành công!"
-    
-    
+
