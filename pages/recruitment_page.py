@@ -49,7 +49,12 @@ class RecuitmentPage(BasePage):
         self.vacancies_list = (By.XPATH, '//div[@class="oxd-table orangehrm-vacancy-list"]')
         self.search_job_title_dropdown = (By.XPATH, '//label[text()="Job Title"]/following::div[1]')
         self.search_hiring_manager_field = (By.XPATH, '//label[text()="Hiring Manager"]/following::div[1]')
+        self.search_btn = (By.XPATH, '//button[@type="submit"]')
         
+        self.table_records = (By.XPATH, '//div[@class="oxd-table-card"]')
+        self.first_row_vacancy_name = (By.XPATH, '//div[@class="oxd-table-card"][1]')
+        self.user_dropdown = (By.CLASS_NAME, "oxd-userdropdown-button")
+        self.logout_link = (By.XPATH, '//a[text()="Logout"]')
         
 
     def navigate_to_vacancies_tab(self):
@@ -88,6 +93,10 @@ class RecuitmentPage(BasePage):
         element = self.driver.find_element(*self.description_field)
         element.clear()
         element.send_keys(desc)
+        
+    def get_current_hiring_manager_name(self):
+        manager_name= self.driver.find_element(*self.user_dropdown_name).text
+        return manager_name
 
     def select_hiring_manager(self, manager_keyword):
         # 1. Tìm ô nhập liệu Hiring Manager và dán text vào
@@ -160,8 +169,8 @@ class RecuitmentPage(BasePage):
 
     #Hàm phục vụ cho Bước 10: Tìm kiếm lại bản ghi vừa tạo
     def search_created_vacancy(self, job_title, manager_keyword):
+        # Chọn Job Title trong dropdown search
         self.driver.find_element(*self.search_job_title_dropdown).click()
-        sleep(2)
         # Wait for dropdown options to appear
         WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//div[@role="option"]'))
@@ -171,15 +180,16 @@ class RecuitmentPage(BasePage):
         self.driver.find_element(*role_option).click()
         sleep(2)
         
+        
+        # Chọn Hiring Manager trong dropdown search
         self.driver.find_element(*self.search_hiring_manager_field).click()
+        sleep(5)
         # Wait for dropdown options to appear
         WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, '//div[@role="option"]'))
         )
         # Tìm thẻ span chứa chính xác tên Hiring Manager được truyền vào để click
         manager_option = (By.XPATH, f'//div[@role="option"]//span[text()="{manager_keyword}"]')
-        print(f"DEBUG: manager_option locator11111111: {manager_keyword}")
-        sleep(10)
         self.find_element(manager_option).click()
             
         self.driver.find_element(*self.search_btn).click()

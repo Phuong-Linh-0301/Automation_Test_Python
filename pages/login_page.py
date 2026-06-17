@@ -2,7 +2,7 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from pages.page_base import BasePage
+from pages.base_page import BasePage
 
 class LoginPage(BasePage):
     def __init__(self, driver):

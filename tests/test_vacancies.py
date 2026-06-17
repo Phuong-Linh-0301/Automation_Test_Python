@@ -35,9 +35,8 @@ def test_create_new_automation_tester_vacancy_flow(driver):
     assert recruitment_page.is_add_vacancy_header_displayed()==True, "Lỗi: Không điều hướng được tới trang Add Vacancy!"
     
     # Xử lý lấy tên user động và nhập Form 
-    # 1. Lấy text từ ô userdropdownname ngay tại file test
-    user_locator = (By.XPATH, '//p[@class="oxd-userdropdown-name"]')
-    manager_keyword_from_web = driver.find_element(*user_locator).text 
+    # 1. Lấy text từ ô userdropdownname n
+    manager_keyword_from_web = recruitment_page.get_current_hiring_manager_name() 
 
     
 
@@ -67,7 +66,6 @@ def test_create_new_automation_tester_vacancy_flow(driver):
     # Tìm kiếm thông tin vừa tạo ----
     # Ô manager_keyword để rỗng để hệ thống tự lọc theo tài khoản vừa tạo
     recruitment_page.search_created_vacancy(job_title="Automaton Tester", manager_keyword=manager_keyword_from_web)
-    
     # Verify có ít nhất 1 dòng kết quả xuất hiện trong bảng ----
     assert recruitment_page.get_results_count() >= 1, "Lỗi: Không tìm thấy bản ghi nào sau khi Search!"
     
