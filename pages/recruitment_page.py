@@ -53,9 +53,9 @@ class RecuitmentPage(BasePage):
         
         self.table_records = (By.XPATH, '//div[@class="oxd-table-card"]')
         self.first_row_vacancy_name = (By.XPATH, '//div[@class="oxd-table-card"][1]')
-        self.user_dropdown = (By.CLASS_NAME, "oxd-userdropdown-button")
+        self.user_dropdown = (By.CLASS_NAME, "oxd-userdropdown-tab")
         self.logout_link = (By.XPATH, '//a[text()="Logout"]')
-        
+    
 
     def navigate_to_vacancies_tab(self):
         self.driver.find_element(*self.vacancies_tab).click()

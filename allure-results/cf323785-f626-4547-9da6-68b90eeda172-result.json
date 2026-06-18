@@ -1,0 +1,1 @@
+{"name": "test_drag_drop_guru99", "status": "skipped", "description": "Test kéo thả 4 ô (Account, Amount) từ Debit và Credit side", "start": 1781788721454, "stop": 1781788721454, "uuid": "6a3d22bd-8b3c-491f-ba34-8ded4ae906ab", "testCaseId": "024d3e376564ccbda439ed595bccb8c9", "fullName": "tests.practise#test_drag_drop_guru99", "titlePath": ["tests", "practise.py"]}
