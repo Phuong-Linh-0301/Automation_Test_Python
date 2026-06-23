@@ -14,6 +14,12 @@ class ConfigReader:
     @staticmethod
     def get_base_url():
         return ConfigReader.load_config()['base_url']
+
+    @staticmethod
+    def get_api_base_url():
+        # Return api_base_url if present, otherwise fallback to base_url
+        cfg = ConfigReader.load_config()
+        return cfg.get('api_base_url') 
     
     @staticmethod
     def get_username():
